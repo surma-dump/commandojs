@@ -40,6 +40,10 @@ task.filesIn('node_modules/pixi.js')
   .withName('pixi.js')
   .run(commonTasks.minifyJs(), {skip: debug})
   .put('modules');
+task.filesIn('node_modules/babel-standalone')
+  .withName('babel.js')
+  .run(commonTasks.minifyJs(), {skip: debug})
+  .put('modules');
 
 gulp.task('build', task.build());
 gulp.task('default', gulp.series('build'));
