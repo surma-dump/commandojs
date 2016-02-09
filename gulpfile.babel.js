@@ -3,6 +3,7 @@ import gtb from './gtb';
 import pkg from './package.json';
 import commonTasks from './gtb/common-tasks';
 import serve from './gulp-tasks/serve';
+import * as metadata from './gulp-tasks/metadata';
 
 var task = gtb();
 var debug = process.env.ENV !== 'prod';
@@ -44,6 +45,10 @@ task.filesIn('node_modules/babel-standalone')
   .withName('babel.js')
   .run(commonTasks.minifyJs(), {skip: debug})
   .put('modules');
+task.filesIn('assets')
+  .withExtension('png')
+  .run(metadata.sprite())
+  .put('assets');
 
 gulp.task('build', task.build());
 gulp.task('default', gulp.series('build'));
