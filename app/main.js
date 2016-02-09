@@ -2,31 +2,37 @@ import cssLoader from 'modules/defer-css';
 cssLoader();
 
 import PIXI from 'modules/pixi';
-const r = PIXI.autoDetectRenderer(800, 600, {backgroundColor: 0xFF0000});
+const r = PIXI.autoDetectRenderer(800, 600);
 const code = document.querySelector('#code');
 document.body.insertBefore(r.view, code);
 
+PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
 var state = {
   x: 0,
   y: 0,
 };
 const stage = new PIXI.Container();
-const g = new PIXI.Graphics();
-stage.addChild(g);
-
-var script;
+stage.scale = {x: 3, y: 3};
+PIXI.loader
+  .add('assets/sprites/link.json', resource => {
+    const frames = Object.keys(resource.textures)
+      .filter(key => key.startsWith('link_0_'))
+      .filter(key => !key.endsWith('0'))
+      .reduce((frames, key) => frames.concat(resource.textures[key]), []);
+    const movie = new PIXI.extras.MovieClip(frames);
+    movie.animationSpeed = 0.2;
+    movie.x = 50;
+    movie.y = 50;
+    movie.play()
+    stage.addChild(movie);
+  })
+  .load();
 animate();
 
 function animate(timestamp) {
-  if(script && script.tick) {
+  if(typeof script !== 'undefined' && script.tick) {
     state = script.tick(state, timestamp);
   }
-  g.clear();
-  g.lineStyle(1, 0x0000FF, 1.0);
-  g.beginFill(0x0000FF, 1.0);
-  g.drawRect(state.x, state.y, 50, 50);
-  g.endFill(0x0000FF, 1.0);
-
   r.render(stage);
   requestAnimationFrame(animate);
 }
