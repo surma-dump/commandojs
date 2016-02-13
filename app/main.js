@@ -1,10 +1,26 @@
 import cssLoader from 'modules/defer-css';
 cssLoader();
 
+const focusables = document.body.querySelectorAll('.focusable');
+const tabs = 'QWER';
+document.body.addEventListener('keypress', ev => {
+  const idx = tabs.split('').map(x => 'Key'+x).indexOf(ev.code);
+  if(idx === -1) {
+    return -1;
+  }
+  const active = document.body.querySelector('.focusable.active');
+  if(active) {
+    active.classList.remove('active');
+  }
+  if(focusables[idx]) {
+    focusables[idx].classList.add('active');
+  }
+});
+
 import PIXI from 'modules/pixi';
-const r = PIXI.autoDetectRenderer(800, 600);
+const r = PIXI.autoDetectRenderer(512, 512);
 const code = document.querySelector('#code');
-document.body.insertBefore(r.view, code);
+document.querySelector('#view').appendChild(r.view);
 
 PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
 var state = {
@@ -12,7 +28,6 @@ var state = {
   y: 0,
 };
 const stage = new PIXI.Container();
-stage.scale = {x: 3, y: 3};
 PIXI.loader
   .add('assets/sprites/link.json', resource => {
     const frames = Object.keys(resource.textures)
@@ -21,8 +36,8 @@ PIXI.loader
       .reduce((frames, key) => frames.concat(resource.textures[key]), []);
     const movie = new PIXI.extras.MovieClip(frames);
     movie.animationSpeed = 0.2;
-    movie.x = 50;
-    movie.y = 50;
+    movie.x = 0;
+    movie.y = 0;
     movie.play()
     stage.addChild(movie);
   })

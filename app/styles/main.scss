@@ -11,11 +11,30 @@ html, body {
   width: 100vw;
 }
 body {
+  position: relative;
+}
+body > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  visibility: hidden;
+  &.active {
+    visibility: visible;
+  }
+}
+#view {
+  background-color: red;
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
+  justify-content: center;
+  align-items: center;
+  > canvas {
+    image-rendering: pixelated;
+    width: 100vmin;
+    height: 100vmin;
+  }
 }
 #code {
-  flex-grow: 1;
   font-family: monospace;
 }
